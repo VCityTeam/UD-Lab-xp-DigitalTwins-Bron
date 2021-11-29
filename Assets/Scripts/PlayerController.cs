@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     private float turncurrent;
 
+    public float jumpspeed = 5f;
+
     private void Start()
     {
         this.skaterbody = GetComponent<Rigidbody>();
@@ -22,6 +24,9 @@ public class PlayerController : MonoBehaviour
         float hori = Input.GetAxis("Horizontal"), verti = Input.GetAxis("Vertical");
         bool near0 = Mathf.Approximately(hori, 0f) && Mathf.Approximately(verti, 0f);
 
+
+
+        // Compute mouse and keys movement
         if (!near0)
         {
             // Computes the wanted input direction with Y velocity untouched
@@ -37,6 +42,18 @@ public class PlayerController : MonoBehaviour
 
             // Apply the moving velocity
             skaterbody.velocity = direction;
+        }
+
+
+    }
+
+    void Update()
+    {
+        bool jump = Input.GetKeyDown(KeyCode.Space);
+        bool grounded = false;
+        if (jump && !grounded)
+        {
+            skaterbody.velocity = new Vector3(skaterbody.velocity.x, skaterbody.velocity.y + jumpspeed, skaterbody.velocity.z);
         }
     }
 }
