@@ -2,16 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum AnimStates
+{
+    skating = 1, paddling = 2
+}
+
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody skaterbody;
+    [SerializeField]
+    private Animator bodymator;
 
     public Transform cam;
     public float speed = 6f;
     public float turnSmoothTime = 0.1f;
     private float turncurrent;
 
-    public float jumpspeed = 5f;
+    public float jumpspeed = 3.5f;
 
     private void Start()
     {
@@ -19,10 +26,14 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    private int animatorstateid = Animator.StringToHash("State");
+
     void FixedUpdate()
     {
         float hori = Input.GetAxis("Horizontal"), verti = Input.GetAxis("Vertical");
         bool near0 = Mathf.Approximately(hori, 0f) && Mathf.Approximately(verti, 0f);
+
+        bodymator.SetInteger(animatorstateid, 1);
 
         // Compute mouse and keys movement
         if (!near0)
