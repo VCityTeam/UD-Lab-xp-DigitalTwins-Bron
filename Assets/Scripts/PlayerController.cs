@@ -24,8 +24,6 @@ public class PlayerController : MonoBehaviour
         float hori = Input.GetAxis("Horizontal"), verti = Input.GetAxis("Vertical");
         bool near0 = Mathf.Approximately(hori, 0f) && Mathf.Approximately(verti, 0f);
 
-
-
         // Compute mouse and keys movement
         if (!near0)
         {
