@@ -20,14 +20,25 @@ public class PlayerController : MonoBehaviour
 
     public float jumpspeed = 2.8f;
     private bool bufferedJump = false;
-    float disttoground;
-    bool grounded = false;
+    private float disttoground;
+    private bool grounded = false;
+
+    private Vector3 originalSkatePos;
+    private Transform skateTransform;
+
+    public JumpTrick currentTrick;
 
     private void Start()
     {
         this.skaterbody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
         disttoground = GetComponent<CapsuleCollider>().bounds.extents.y;
+        foreach (Transform child in transform)
+            if (child.CompareTag("skateboard")) {
+                originalSkatePos = child.localPosition;
+                skateTransform = child;
+            }
+        bodymator.SetInteger(animatorstateid, (int)AnimStates.skating);
     }
 
     private int animatorstateid = Animator.StringToHash("State");
@@ -36,8 +47,6 @@ public class PlayerController : MonoBehaviour
     {
         float hori = Input.GetAxis("Horizontal"), verti = Input.GetAxis("Vertical");
         bool near0 = Mathf.Approximately(hori, 0f) && Mathf.Approximately(verti, 0f);
-
-        bodymator.SetInteger(animatorstateid, 1);
 
         // Compute mouse and keys movement
         if (!near0)
@@ -59,10 +68,20 @@ public class PlayerController : MonoBehaviour
 
         if (bufferedJump)
         {
+            // Jump physics
             bufferedJump = false;
             skaterbody.velocity = new Vector3(skaterbody.velocity.x, skaterbody.velocity.y + jumpspeed, skaterbody.velocity.z);
+            grounded = false;
+            // Jump tricks
+            currentTrick = new Kickflip(originalSkatePos,skateTransform, this);
         }
 
+        if (currentTrick != null)
+            currentTrick.fixedUpdate();
+
+        if (grounded && currentTrick != null) {
+            currentTrick.killTrick();
+        }
 
     }
 
