@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     private Transform skateTransform;
 
     public JumpTrick currentTrick;
+    public bool airborne;
 
     private void Start()
     {
@@ -72,6 +73,8 @@ public class PlayerController : MonoBehaviour
             bufferedJump = false;
             skaterbody.velocity = new Vector3(skaterbody.velocity.x, skaterbody.velocity.y + jumpspeed, skaterbody.velocity.z);
             grounded = false;
+            airborne = true;
+            bodymator.SetInteger(animatorstateid, (int)AnimStates.falling);
             // Jump tricks
             currentTrick = new Kickflip(originalSkatePos,skateTransform, this);
         }
@@ -81,6 +84,11 @@ public class PlayerController : MonoBehaviour
 
         if (grounded && currentTrick != null) {
             currentTrick.killTrick();
+        }
+        if (grounded && airborne) {
+            airborne = false;
+            bodymator.SetInteger(animatorstateid, (int)AnimStates.skating);
+            Debug.Log("g,rnieo,grioe,gio");
         }
 
     }
