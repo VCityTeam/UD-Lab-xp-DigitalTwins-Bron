@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum AnimStates
 {
-    skating = 1, paddling = 2
+    skating = 1, paddling = 2, falling = 3
 }
 
 public class PlayerController : MonoBehaviour
