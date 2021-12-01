@@ -18,12 +18,16 @@ public class PlayerController : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     private float turncurrent;
 
-    public float jumpspeed = 3.5f;
+    public float jumpspeed = 2.8f;
+    private bool bufferedJump = false;
+    float disttoground;
+    bool grounded = false;
 
     private void Start()
     {
         this.skaterbody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
+        disttoground = GetComponent<CapsuleCollider>().bounds.extents.y;
     }
 
     private int animatorstateid = Animator.StringToHash("State");
@@ -53,16 +57,19 @@ public class PlayerController : MonoBehaviour
             skaterbody.velocity = direction;
         }
 
+        if (bufferedJump)
+        {
+            bufferedJump = false;
+            skaterbody.velocity = new Vector3(skaterbody.velocity.x, skaterbody.velocity.y + jumpspeed, skaterbody.velocity.z);
+        }
+
 
     }
 
     void Update()
     {
-        bool jump = Input.GetKeyDown(KeyCode.Space);
-        bool grounded = false;
-        if (jump && !grounded)
-        {
-            skaterbody.velocity = new Vector3(skaterbody.velocity.x, skaterbody.velocity.y + jumpspeed, skaterbody.velocity.z);
-        }
+        grounded = Physics.Raycast(transform.position, -Vector3.up, disttoground + 0.1f);
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+            bufferedJump = true;
     }
 }
