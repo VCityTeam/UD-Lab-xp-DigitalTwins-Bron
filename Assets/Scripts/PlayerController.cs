@@ -12,10 +12,12 @@ public class PlayerController : MonoBehaviour
     private Rigidbody skaterbody;
     [SerializeField]
     private Animator bodymator;
+    [SerializeField]
+    public Canvas ui;
 
     public Transform cam;
-    public float speed = 5.5f;
-    public float turnSmoothTime = 0.1f;
+    public float speed;
+    public float turnSmoothTime;
     private float turncurrent;
 
     public float jumpspeed;
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
     private bool airborne;
     public readonly int trickinvuln = 5;
     private int airtime = 0;
+
 
     private void Start()
     {

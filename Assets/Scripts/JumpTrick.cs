@@ -19,6 +19,8 @@ public abstract class JumpTrick
 
     public abstract void fixedUpdate();
 
+    public abstract string getDisplayName();
+
     public void killTrick() {
         this.ended = true;
         this.skateboard.localPosition = originalSkatePos;

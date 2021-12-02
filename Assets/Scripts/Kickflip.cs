@@ -8,6 +8,10 @@ public class Kickflip : JumpTrick
     { }
 
     private static float degreespertick = 15f, framesmax = 360 / degreespertick;
+    
+    public override string getDisplayName() {
+        return "KickFlip!";
+    }
 
     public override void fixedUpdate()
     {
