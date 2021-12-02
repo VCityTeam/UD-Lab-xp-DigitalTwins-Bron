@@ -14,11 +14,11 @@ public class PlayerController : MonoBehaviour
     private Animator bodymator;
 
     public Transform cam;
-    public float speed = 6f;
+    public float speed = 5.5f;
     public float turnSmoothTime = 0.1f;
     private float turncurrent;
 
-    public float jumpspeed = 2.8f;
+    public float jumpspeed;
     private bool bufferedJump = false;
     private float disttoground;
     private bool grounded = false;
@@ -27,7 +27,9 @@ public class PlayerController : MonoBehaviour
     private Transform skateTransform;
 
     public JumpTrick currentTrick;
-    public bool airborne;
+    private bool airborne;
+    public readonly int trickinvuln = 5;
+    private int airtime = 0;
 
     private void Start()
     {
@@ -71,9 +73,10 @@ public class PlayerController : MonoBehaviour
         {
             // Jump physics
             bufferedJump = false;
+            //skaterbody.velocity = new Vector3(skaterbody.velocity.x, skaterbody.velocity.y + jumpspeed, skaterbody.velocity.z);
             skaterbody.velocity = new Vector3(skaterbody.velocity.x, skaterbody.velocity.y + jumpspeed, skaterbody.velocity.z);
-            grounded = false;
             airborne = true;
+            airtime = 0;
             bodymator.SetInteger(animatorstateid, (int)AnimStates.falling);
             Debug.Log(" > Jumped");
             // Jump tricks
@@ -83,10 +86,18 @@ public class PlayerController : MonoBehaviour
         if (currentTrick != null)
             currentTrick.fixedUpdate();
 
-        if (grounded && currentTrick != null) {
+        if (!grounded) {
+            airtime++;
+        }
+
+        // Code to execute if the player is tricking and hits the ground.
+        // Not triggered if airtime is below invulnerability time for false liftoffs
+        if (grounded && currentTrick != null && airtime > trickinvuln) {
             currentTrick.killTrick();
         }
-        if (grounded && airborne) {
+        
+        // Code to execute when the player reaches the ground
+        if (grounded && airborne && airtime > trickinvuln) {
             airborne = false;
             bodymator.SetInteger(animatorstateid, (int)AnimStates.skating);
             Debug.Log(" > Landed");

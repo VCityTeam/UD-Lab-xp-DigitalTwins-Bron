@@ -7,7 +7,7 @@ public class Kickflip : JumpTrick
     public Kickflip(Vector3 originalPos, Transform skateboard, PlayerController player) : base(originalPos, skateboard, player)
     { }
 
-    private static float degreespertick = 9f, framesmax = 360 / degreespertick;
+    private static float degreespertick = 15f, framesmax = 360 / degreespertick;
 
     public override void fixedUpdate()
     {
