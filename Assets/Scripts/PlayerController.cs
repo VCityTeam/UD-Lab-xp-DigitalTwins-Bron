@@ -75,6 +75,7 @@ public class PlayerController : MonoBehaviour
             grounded = false;
             airborne = true;
             bodymator.SetInteger(animatorstateid, (int)AnimStates.falling);
+            Debug.Log(" > Jumped");
             // Jump tricks
             currentTrick = new Kickflip(originalSkatePos,skateTransform, this);
         }
@@ -88,7 +89,7 @@ public class PlayerController : MonoBehaviour
         if (grounded && airborne) {
             airborne = false;
             bodymator.SetInteger(animatorstateid, (int)AnimStates.skating);
-            Debug.Log("g,rnieo,grioe,gio");
+            Debug.Log(" > Landed");
         }
 
     }
