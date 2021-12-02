@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum AnimStates
 {
@@ -106,6 +107,14 @@ public class PlayerController : MonoBehaviour
             Debug.Log(" > Landed");
         }
 
+        // Decrease power jauge
+        if (ui == null) {
+            Debug.Log("UI is null, Player can't update values!");
+        } else {
+            Image powerimg = ui.transform.Find("Power").GetComponent<Image>();
+            float filling = powerimg.fillAmount, filldrain = 0.0009f;
+            powerimg.fillAmount = filling > filldrain ? filling - filldrain : 0f;
+        }
     }
 
     void Update()

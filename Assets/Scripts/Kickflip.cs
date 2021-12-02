@@ -8,14 +8,23 @@ public class Kickflip : JumpTrick
     { }
 
     private static float degreespertick = 15f, framesmax = 360 / degreespertick;
-    
-    public override string getDisplayName() {
+
+    public override string getDisplayName()
+    {
         return "KickFlip!";
+    }
+
+    public override float getScore() {
+        return 0.1f;
     }
 
     public override void fixedUpdate()
     {
         frames++;
+
+        if (frames == 1)
+            incrementScore();
+
         skateboard.Rotate(new Vector3(0f, 0f, degreespertick), Space.Self);
 
         if (frames > framesmax)
