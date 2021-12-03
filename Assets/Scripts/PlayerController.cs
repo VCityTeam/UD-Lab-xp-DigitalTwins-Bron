@@ -10,9 +10,9 @@ public enum AnimStates
 
 public class PlayerController : MonoBehaviour
 {
-    private Rigidbody skaterbody;
+    public Rigidbody skaterbody;
     [SerializeField]
-    private Animator bodymator;
+    public Animator bodymator;
     [SerializeField]
     public Canvas ui;
 
@@ -41,7 +41,8 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         disttoground = GetComponent<CapsuleCollider>().bounds.extents.y;
         foreach (Transform child in transform)
-            if (child.CompareTag("skateboard")) {
+            if (child.CompareTag("skateboard"))
+            {
                 originalSkatePos = child.localPosition;
                 skateTransform = child;
             }
@@ -82,44 +83,65 @@ public class PlayerController : MonoBehaviour
             airborne = true;
             airtime = 0;
             bodymator.SetInteger(animatorstateid, (int)AnimStates.falling);
-            Debug.Log(" > Jumped");
             // Jump tricks
-            currentTrick = new Kickflip(originalSkatePos,skateTransform, this);
+            switch (Random.Range(0, 2))
+            {
+                default: currentTrick = new Kickflip(originalSkatePos, skateTransform, this); break;
+                case 1: currentTrick = new ShoveIt(originalSkatePos, skateTransform, this); break;
+            }
         }
 
         if (currentTrick != null)
             currentTrick.fixedUpdate();
 
-        if (!grounded) {
+        if (!grounded)
+        {
             airtime++;
         }
 
         // Code to execute if the player is tricking and hits the ground.
         // Not triggered if airtime is below invulnerability time for false liftoffs
-        if (grounded && currentTrick != null && airtime > trickinvuln) {
+        if (grounded && currentTrick != null && airtime > trickinvuln)
+        {
             currentTrick.killTrick();
         }
-        
+
         // Code to execute when the player reaches the ground
-        if (grounded && airborne && airtime > trickinvuln) {
+        if (grounded && airborne && airtime > trickinvuln)
+        {
             airborne = false;
             bodymator.SetInteger(animatorstateid, (int)AnimStates.skating);
-            Debug.Log(" > Landed");
         }
 
         // Decrease power jauge
-        if (ui == null) {
+        if (ui == null)
+        {
             Debug.Log("UI is null, Player can't update values!");
-        } else {
+        }
+        else
+        {
             Image powerimg = ui.transform.Find("Power").GetComponent<Image>();
             float filling = powerimg.fillAmount, filldrain = 0.0009f;
             powerimg.fillAmount = filling > filldrain ? filling - filldrain : 0f;
         }
     }
 
+    public void setGrindingState() {
+        if (currentTrick != null) {
+            currentTrick.killTrick();
+        }
+        airborne = true;
+        grounded = false;
+        airtime = 0;
+        bodymator.SetInteger(animatorstateid, (int)AnimStates.falling);
+        skaterbody.position = skaterbody.position + Vector3.up * 0.2f;
+
+        currentTrick = new GrindTrick(originalSkatePos, skateTransform, this);
+    }
+
     void Update()
     {
-        grounded = Physics.Raycast(transform.position, -Vector3.up, disttoground + 0.1f);
+        grounded = Physics.Raycast(transform.position, -Vector3.up, disttoground + 0.1f) || (currentTrick != null && currentTrick is GrindTrick);
         if (Input.GetKeyDown(KeyCode.Space) && grounded)
             bufferedJump = true;
     }
