@@ -36,6 +36,9 @@ public abstract class JumpTrick
         Image powerimg = player.ui.transform.Find("Power").GetComponent<Image>();
         float filling = powerimg.fillAmount + getScore();
         powerimg.fillAmount = filling > 1f ? 1f : filling;
+
+        TricksText tmp = player.ui.transform.Find("Power").Find("TrickDisplay").GetComponent<TricksText>();
+        tmp.setTrickText(getDisplayName());
     }
 
 }
